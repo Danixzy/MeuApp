@@ -5,75 +5,87 @@ export default function RootLayout() {
 
   const [number, onChangeNumber] = React.useState('');
   const [resultado, onChangeResultado] = React.useState('');
-  const [operacao, onChangeOperacao] = React.useState('');
-  const [expressao, setExpressao] = React.useState('');
 
   function Clear(){
     onChangeNumber("")
     onChangeResultado("")
   }
 
-  function Calcular(){
-    onChangeNumber(prev => prev + "=")
-    setExpressao(`${number}`)
-    onChangeResultado(eval(expressao))
+  function Calcular() {
+    try {
+      const expressao = number.replace(/X/g, '*').replace(/,/g, '.');
+      const calculo = eval(expressao);
+      onChangeResultado(String(calculo));
+    } catch (error) {
+      onChangeResultado("Erro");
+    }
   }
 
-  function Somar(){
-    onChangeOperacao("+")
-    onChangeNumber(prev => prev + "+")
+  function Raiz(){
+    try {
+    const expressao = parseFloat(number.replace(/X/g, '*').replace(/,/g, '.'));
+    const calculo = Math.sqrt(expressao)
+    onChangeResultado(String(calculo));
+    } catch (error) {
+      onChangeResultado("Erro");
+    }
   }
 
-  function Subtrair(){
-     onChangeOperacao("-")
-     onChangeNumber(prev => prev + "-")
-  }
-
-  function Multiplicar(){
-     onChangeOperacao("*")
-     onChangeNumber(prev => prev + "X")
-  }
-
-  function Dividir(){
-     onChangeOperacao("/")
-     onChangeNumber(prev => prev + "/")
+ function handleOperator(op: string) {
+  switch (op) {
+   case '+':
+     onChangeNumber(prev => prev + '+');
+     break;
+   case '-':
+     onChangeNumber(prev => prev + '-');
+        break;
+      case 'X':
+        onChangeNumber(prev => prev + 'X');
+        break;
+      case '/':
+        onChangeNumber(prev => prev + '/');
+        break;
+     default:
+       break;
+    }
   }
 
   return (
     <View style={styles.container}>
         <View style={styles.backgroundcontainer}>
           <View style={styles.visor}>
-          <Text style={styles.textcolor}>{number}{resultado}</Text>
+           {resultado !== '' ? <Text style={styles.textcolorapag}>{number}</Text> : <Text style={styles.textcolor}>{number}</Text>}
+          {resultado !== '' ? <Text style={styles.textcolor}>{resultado}</Text> : null}
           </View>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.numbers} onPress={() => Clear()}><Text style={styles.textcolor}>AC</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers}><Text style={styles.textcolor}>+/-</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => Dividir()} ><Text style={styles.textcolor}>%</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers}><Text style={styles.textcolor}>sla</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsLightGray} onPress={() => Clear()}><Text style={styles.textcolor}>AC</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsLightGray}><Text style={styles.textcolor}>+/-</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsLightGray} onPress={() => Raiz()} ><Text style={styles.textcolor}>raiz</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsYellow} onPress={() => handleOperator('/')}><Text style={styles.textcolor}>/</Text></TouchableOpacity>
           </View>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.numbers}onPress={() => onChangeNumber(prev => prev + "7")}><Text style={styles.textcolor}>7</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "8")}><Text style={styles.textcolor}>8</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "9")}><Text style={styles.textcolor}>9</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => Multiplicar()} ><Text style={styles.textcolor}>X</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons}onPress={() => onChangeNumber(prev => prev + "7")}><Text style={styles.textcolor}>7</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "8")}><Text style={styles.textcolor}>8</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "9")}><Text style={styles.textcolor}>9</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsYellow} onPress={() => handleOperator('X')} ><Text style={styles.textcolor}>X</Text></TouchableOpacity>
           </View>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "4")}><Text style={styles.textcolor}>4</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "5")}><Text style={styles.textcolor}>5</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "6")}><Text style={styles.textcolor}>6</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => Subtrair()} ><Text style={styles.textcolor}>-</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "4")}><Text style={styles.textcolor}>4</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "5")}><Text style={styles.textcolor}>5</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "6")}><Text style={styles.textcolor}>6</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsYellow} onPress={() => handleOperator('-')} ><Text style={styles.textcolor}>-</Text></TouchableOpacity>
           </View>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "1")}><Text style={styles.textcolor}>1</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "2")}><Text style={styles.textcolor}>2</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => onChangeNumber(prev => prev + "3")}><Text style={styles.textcolor}>3</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => Somar()} ><Text style={styles.textcolor}>+</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "1")}><Text style={styles.textcolor}>1</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "2")}><Text style={styles.textcolor}>2</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "3")}><Text style={styles.textcolor}>3</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsYellow} onPress={() => handleOperator('+')} ><Text style={styles.textcolor}>+</Text></TouchableOpacity>
           </View>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.numbers}><Text style={styles.textcolor}>cal</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers}><Text style={styles.textcolor}>0</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers}><Text style={styles.textcolor}>,</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.numbers} onPress={() => Calcular()} ><Text style={styles.textcolor}>=</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons}><Text style={styles.textcolor}>cal</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + "0")}><Text style={styles.textcolor}>0</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttons} onPress={() => onChangeNumber(prev => prev + ",")}><Text style={styles.textcolor}>,</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonsYellow} onPress={() => Calcular()} ><Text style={styles.textcolor}>=</Text></TouchableOpacity>
           </View>
         </View>
     </View>
@@ -84,28 +96,60 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: "center",
+    backgroundColor: "#000",
   },
-    row: {
+  row: {
     flexDirection: 'row',
-    gap: 2
   },
-    numbers: {
-      width: 50,
-      height: 50,
-      backgroundColor: "#165fe7ff",
-      alignItems: "center",
-      borderRadius: 50,
-    },
-    backgroundcontainer: {
-      backgroundColor: "#000000ff",
-      padding: 10,
-    },
-    textcolor: {
-      marginTop: 14,
-      color: "#f3f3f3",
-    },
-    visor: {
-    }
+  buttons: {
+    flex: 1,
+    backgroundColor: "rgb(68, 70, 73)",
+    aspectRatio: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+    margin: 3,
+  },
+  buttonsYellow: {
+    flex: 1,
+    aspectRatio: 1,
+    backgroundColor: "#ff9100",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+    margin: 3,
+  },
+  buttonsLightGray: {
+    flex: 1,
+    backgroundColor: "rgb(132, 132, 133)",
+    aspectRatio: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+    margin: 3,
+  },
+  backgroundcontainer: {
+    flex: 1,
+    backgroundColor: "#000",
+    justifyContent: "flex-end", 
+    paddingHorizontal: 10,
+    paddingBottom: 40,
+  },
+  textcolor: {
+    color: "#f3f3f3",
+    fontSize: 30,
+    fontWeight: "400",
+  },
+  textcolorapag: {
+    marginBottom: 5,
+    color: "#c7c7c783",
+    fontSize: 25,
+  },
+  visor: {
+    flex: 1,
+    justifyContent: "flex-end", 
+    alignItems: "flex-end",
+    paddingHorizontal: 15,
+    marginBottom: 30,
+  }
 });
